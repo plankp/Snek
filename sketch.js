@@ -4,7 +4,7 @@ let dy = 0
 let ax = 0
 let ay = 0
 let pending = 0
-let ongoing = true
+let state = -1
 
 let w = 25
 
@@ -26,10 +26,19 @@ function draw() {
   scale()
   scale(width / 400)
 
-  if (ongoing)
-    gameloop()
-  else
-    gameover()
+  switch (state) {
+  case -1:  return startmenu()
+  case 0:   return gameloop()
+  case 1:   return gameover()
+  }
+}
+
+function keyPressed() {
+  switch (state) {
+  case -1:  return startmenuKeyHnd()
+  case 0:   return gameloopKeyHnd()
+  case 1:   return gameoverKeyHnd()
+  }
 }
 
 function windowResized() {
@@ -40,20 +49,55 @@ function windowResized() {
 
 function initialize_game() {
   dx = 0
-  dy = -1
+  dy = 0
   pending = 2
-  ongoing = true
+  state = -1
 
   c = floor(w / 2)
   body = [[c, c]]
-  
+
   randomize_apple()
+}
+
+function startmenu() {
+  fill('green')
+  let v = 400 / w
+  rect(ax * v, ay * v, v, v)
+
+  fill('white')
+  let pt = body[0]
+  rect(pt[0] * v, pt[1] * v, v, v)
+}
+
+function startmenuKeyHnd() {
+  switch (keyCode) {
+  case RIGHT_ARROW:
+    dx = 1
+    dy = 0
+    state = 0
+    break
+  case LEFT_ARROW:
+    dx = -1
+    dy = 0
+    state = 0
+    break
+  case DOWN_ARROW:
+    dx = 0
+    dy = 1
+    state = 0
+    break
+  case UP_ARROW:
+    dx = 0
+    dy = -1
+    state = 0
+    break
+  }
 }
 
 function randomize_apple() {
   ax = floor(random(w))
   ay = floor(random(w))
-  
+
   let len = body.length
   for (let i = 0; i < len; ++i) {
     let pt = body[i]
@@ -74,7 +118,7 @@ function draw_and_update_apple() {
     pending += 2
     randomize_apple()
   }
-  
+
   let v = 400 / w
   fill('green')
   rect(ax * v, ay * v, v, v)
@@ -113,7 +157,7 @@ function draw_and_update_snake() {
     rect(px * v, py * v, v, v)
     head = pt
   }
-  
+
   if (pending > 0) {
     --pending
     body.push(head)
@@ -122,34 +166,14 @@ function draw_and_update_snake() {
 
 function gameloop() {
   if (check_collision_snake()) {
-    ongoing = false
+    state = 1
     return
   }
   draw_and_update_apple()
   draw_and_update_snake()
 }
-  
-function gameover() {
-  fill('green')
-  let v = 400 / w
-  rect(ax * v, ay * v, v, v)
-  
-  fill('white')
-  let len = body.length
-  for (let i = 1; i < len; ++i) {
-    let pt = body[i]
-    rect(pt[0] * v, pt[1] * v, v, v)
-  }
 
-  fill('red')
-  let pt = body[0]
-  rect(pt[0] * v, pt[1] * v, v, v)
-}
-
-function keyPressed() {
-  if (!ongoing)
-    return
-
+function gameloopKeyHnd() {
   switch (keyCode) {
   case RIGHT_ARROW:
     if (dx === 0) {
@@ -176,4 +200,26 @@ function keyPressed() {
     }
     break
   }
+}
+
+function gameover() {
+  fill('green')
+  let v = 400 / w
+  rect(ax * v, ay * v, v, v)
+
+  fill('white')
+  let len = body.length
+  for (let i = 1; i < len; ++i) {
+    let pt = body[i]
+    rect(pt[0] * v, pt[1] * v, v, v)
+  }
+
+  fill('red')
+  let pt = body[0]
+  rect(pt[0] * v, pt[1] * v, v, v)
+}
+
+function gameoverKeyHnd() {
+  if (keyCode === ENTER)
+    return initialize_game()
 }
