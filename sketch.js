@@ -199,6 +199,8 @@ function gameloopKeyHnd() {
       dy = -1
     }
     break
+  case ENTER:
+    return initialize_game()
   }
 }
 
