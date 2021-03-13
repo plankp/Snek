@@ -1,9 +1,3 @@
-function setup() {
-  createCanvas(400, 400)
-  frameRate(10)
-  initialize_game()
-}
-
 let body = []
 let dx = 0
 let dy = 0
@@ -14,11 +8,34 @@ let ongoing = true
 
 let w = 25
 
+function setup() {
+  // Setup the canvas
+  let canvw = min(windowWidth, windowHeight)
+  createCanvas(canvw, canvw)
+
+  // Run with a ridiculously low framerate...
+  frameRate(10)
+
+  // Initialize the game
+  initialize_game()
+}
+
 function draw() {
+  // Setup viewport
+  background(0)
+  scale()
+  scale(width / 400)
+
   if (ongoing)
     gameloop()
   else
     gameover()
+}
+
+function windowResized() {
+  // Remake a canvas
+  let canvw = min(windowWidth, windowHeight)
+  createCanvas(canvw, canvw)
 }
 
 function initialize_game() {
@@ -104,7 +121,6 @@ function draw_and_update_snake() {
 }
 
 function gameloop() {
-  background(0)
   if (check_collision_snake()) {
     ongoing = false
     return
@@ -114,8 +130,6 @@ function gameloop() {
 }
   
 function gameover() {
-  background(0)
-
   fill('green')
   let v = 400 / w
   rect(ax * v, ay * v, v, v)
