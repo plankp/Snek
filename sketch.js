@@ -95,20 +95,27 @@ function startmenuKeyHnd() {
 }
 
 function randomize_apple() {
-  ax = floor(random(w))
-  ay = floor(random(w))
-
+  // fill up occupied cells
+  let buffer = Array(w * w)
   let len = body.length
   for (let i = 0; i < len; ++i) {
     let pt = body[i]
-    let change_x = ax === pt[0]
-    let change_y = ay === pt[1]
-    if (change_x)
-      ax = floor(random(w))
-    if (change_y)
-      ay = floor(random(w))
-    if (change_x || change_y)
-      i = 0
+    buffer[pt[0] + pt[1] * w] = true
+  }
+
+  // make initial guess
+  ax = floor(random(w))
+  ay = floor(random(w))
+
+  // search for first empty cell at or after the initial guess
+  for (;;) {
+    if (!buffer[ax + ay * w])
+      return
+    if (++ax >= w) {
+      ax = 0
+      if (++ay >= w)
+        ay = 0
+    }
   }
 }
 
