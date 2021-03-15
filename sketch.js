@@ -96,12 +96,9 @@ function startmenuKeyHnd() {
 
 function randomize_apple() {
   // fill up occupied cells
-  let buffer = Array(w * w)
-  let len = body.length
-  for (let i = 0; i < len; ++i) {
-    let pt = body[i]
-    buffer[pt[0] + pt[1] * w] = true
-  }
+  let map = new Map()
+  for (let [px, py] of body)
+    map.set(px + py * w, true)
 
   // make initial guess
   ax = floor(random(w))
@@ -109,7 +106,7 @@ function randomize_apple() {
 
   // search for first empty cell at or after the initial guess
   for (;;) {
-    if (!buffer[ax + ay * w])
+    if (!map.get(ax + ay * w))
       return
     if (++ax >= w) {
       ax = 0
