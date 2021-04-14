@@ -46,6 +46,8 @@ function keyPressed() {
 function mousePressed() {
   savedX = mouseX
   savedY = mouseY
+
+  return false
 }
 
 function mouseMoved() {
