@@ -1,4 +1,6 @@
 var body = []
+var savedX = null
+var savedY = null
 var dx = 0
 var dy = 0
 var ax = 0
@@ -41,14 +43,27 @@ function keyPressed() {
   }
 }
 
-function mouseDragged() {
-  if (state !== 0) {
-    initialize_game()
-    state = 0
-  }
+function mousePressed() {
+  savedX = mouseX
+  savedY = mouseY
+}
 
-  var dragX = movedX
-  var dragY = movedY
+function mouseMoved() {
+  if (savedX === null || savedY === null)
+    return
+
+  var dragX = mouseX - savedX
+  var dragY = mouseY - savedY
+  if (dragX === 0 || dragY === 0)
+    return
+
+  savedX = null
+  savedY = null
+
+  if (state === 1)
+    initialize_game()
+  state = 0
+
   if (Math.abs(dragX) > Math.abs(dragY)) {
     if (dx !== 0)
       return false
@@ -71,6 +86,8 @@ function windowResized() {
 }
 
 function initialize_game() {
+  savedX = null
+  savedY = null
   dx = 0
   dy = 0
   pending = 2
