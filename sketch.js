@@ -41,6 +41,29 @@ function keyPressed() {
   }
 }
 
+function mouseDragged() {
+  if (state !== 0) {
+    initialize_game()
+    state = 0
+  }
+
+  var dragX = movedX
+  var dragY = movedY
+  if (Math.abs(dragX) > Math.abs(dragY)) {
+    if (dx !== 0)
+      return false
+    dx = dragX > 0 ? 1 : -1
+    dy = 0
+  } else {
+    if (dy !== 0)
+      return false
+    dx = 0
+    dy = dragY > 0 ? 1 : -1
+  }
+
+  return false
+}
+
 function windowResized() {
   // Remake a canvas
   var canvw = min(windowWidth, windowHeight)
